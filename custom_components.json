@@ -1,0 +1,9 @@
+{
+  "name": "RD03D mmWave Sensor",
+  "version": "1.0.0",
+  "files": [
+    "custom_components/rd03d/rd03d_sensor.h",
+    "custom_components/rd03d/rd03d_sensor.cpp",
+    "custom_components/rd03d/__init__.py"
+  ]
+}
