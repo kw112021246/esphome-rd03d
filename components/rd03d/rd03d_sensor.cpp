@@ -1,41 +1,23 @@
-#pragma once
-
-#include "esphome/core/component.h"
-#include "esphome/components/uart/uart.h"
-#include "esphome/components/sensor/sensor.h"
+#include "rd03d_sensor.h"
+#include "esphome/core/log.h"
 
 namespace esphome {
 namespace rd03d {
 
-class RD03DSensor : public PollingComponent, public uart::UARTDevice {
- public:
-  RD03DSensor(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
+static const char *const TAG = "rd03d";
 
-  void set_sensor(sensor::Sensor *sensor) { this->sensor_ = sensor; }
+RD03DSensor::RD03DSensor(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
 
-  void setup() override {}
+void RD03DSensor::setup() {
+  ESP_LOGI(TAG, "RD03D sensor setup complete");
+}
 
-  void update() override;
-
- protected:
-  sensor::Sensor *sensor_;
-  std::string buffer_;
-
-  float parse_data_(const std::string &raw) {
-    if (raw.rfind("D:", 0) == 0) {
-      try {
-        int mm = std::stoi(raw.substr(2));
-        return mm / 1000.0f;
-      } catch (...) {
-        return NAN;
-      }
-    }
-    return NAN;
-  }
-};
-
-}  // namespace rd03d
-}  // namespace esphome
-
-ESPHOME_REGISTER_COMPONENT(rd03d::RD03DSensor, rd03d::RD03DSensor);
-
+void RD03DSensor::update() {
+  while (available()) {
+    char c = read();
+    buffer_ += c;
+    if (c == '\n') {
+      float distance = parse_data_(buffer_);
+      if (!std::isnan(distance) && sensor_ != nullptr) {
+        ESP_LOGD(TAG, "Parsed distance: %.2f m", distance);
+        sensor_->_
