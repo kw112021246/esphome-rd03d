@@ -1,37 +1,31 @@
-
 #pragma once
 
-#include "esphome.h"
+#include "esphome/core/component.h"
+#include "esphome/components/uart/uart.h"
+#include "esphome/components/sensor/sensor.h"
 
-class RD03DSensor : public PollingComponent, public Sensor {
+namespace esphome {
+namespace rd03d {
+
+class RD03DSensor : public PollingComponent, public uart::UARTDevice {
  public:
-  RD03DSensor(UARTComponent *uart) : uart_(uart) {}
+  RD03DSensor(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
+
+  void set_sensor(sensor::Sensor *sensor) { this->sensor_ = sensor; }
 
   void setup() override {}
 
-  void update() override {
-    while (uart_->available()) {
-      int b = uart_->read();
-      buffer_ += (char)b;
-      if (b == '\n') {
-        float value = parse_data(buffer_);
-        if (!std::isnan(value)) {
-          publish_state(value);
-        }
-        buffer_ = "";
-      }
-    }
-  }
+  void update() override;
 
- private:
-  UARTComponent *uart_;
+ protected:
+  sensor::Sensor *sensor_;
   std::string buffer_;
 
-  float parse_data(const std::string &raw) {
+  float parse_data_(const std::string &raw) {
     if (raw.rfind("D:", 0) == 0) {
       try {
         int mm = std::stoi(raw.substr(2));
-        return mm / 1000.0;
+        return mm / 1000.0f;
       } catch (...) {
         return NAN;
       }
@@ -39,3 +33,6 @@ class RD03DSensor : public PollingComponent, public Sensor {
     return NAN;
   }
 };
+
+}  // namespace rd03d
+}  // namespace esphome
