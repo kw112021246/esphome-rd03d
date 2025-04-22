@@ -36,3 +36,6 @@ class RD03DSensor : public PollingComponent, public uart::UARTDevice {
 
 }  // namespace rd03d
 }  // namespace esphome
+
+ESPHOME_REGISTER_COMPONENT(rd03d::RD03DSensor, rd03d::RD03DSensor);
+
