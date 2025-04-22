@@ -1,32 +1,38 @@
-#include "rd03d_sensor.h"
-#include "esphome/core/log.h"
+#pragma once
+
+#include "esphome/core/component.h"
+#include "esphome/components/uart/uart.h"
+#include "esphome/components/sensor/sensor.h"
 
 namespace esphome {
 namespace rd03d {
 
-static const char *const TAG = "rd03d";
+class RD03DSensor : public PollingComponent, public uart::UARTDevice {
+ public:
+  RD03DSensor(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
 
-RD03DSensor::RD03DSensor(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
+  void set_sensor(sensor::Sensor *sensor) { this->sensor_ = sensor; }
 
-void RD03DSensor::setup() {
-  ESP_LOGI(TAG, "RD03D sensor setup complete");
-}
+  void setup() override {}
 
-void RD03DSensor::update() {
-  if (available()) {
-    std::string response;
-    while (available()) {
-      char c = read();
-      response += c;
+  void update() override;
+
+ protected:
+  sensor::Sensor *sensor_;
+  std::string buffer_;
+
+  float parse_data_(const std::string &raw) {
+    if (raw.rfind("D:", 0) == 0) {
+      try {
+        int mm = std::stoi(raw.substr(2));
+        return mm / 1000.0f;
+      } catch (...) {
+        return NAN;
+      }
     }
-
-    // Example: extract float value from response string
-    float distance = std::stof(response);  // You may need a more robust parser
-    if (this->sensor_ != nullptr) {
-      this->sensor_->publish_state(distance);
-    }
+    return NAN;
   }
-}
+};
 
 }  // namespace rd03d
 }  // namespace esphome
