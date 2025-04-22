@@ -1,0 +1,3 @@
+platform: rd03d
+requires:
+  uart:
