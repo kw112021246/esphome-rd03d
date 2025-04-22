@@ -1,0 +1,7 @@
+platform: rd03d
+requires:
+  uart:
+
+sensor:
+  - name: RD03D Sensor
+    class: RD03DSensor
