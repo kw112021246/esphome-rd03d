@@ -7,22 +7,17 @@
 namespace esphome {
 namespace rd03d {
 
-static const char *const TAG = "rd03d";
-
 class RD03DSensor : public PollingComponent, public uart::UARTDevice {
  public:
-  RD03DSensor(uart::UARTComponent *parent);
+  RD03DSensor(uart::UARTComponent *parent) : UARTDevice(parent) {}
 
-  void setup() override;
+  void setup() override {}
   void update() override;
 
   void set_sensor(sensor::Sensor *sensor) { sensor_ = sensor; }
 
  protected:
-  std::string buffer_;
   sensor::Sensor *sensor_{nullptr};
-
-  float parse_data_(const std::string &data);
 };
 
 }  // namespace rd03d
