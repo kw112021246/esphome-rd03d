@@ -1,8 +1,8 @@
 {
   "name": "rd03d",
   "files": [
-    "components/rd03d/rd03d_sensor.cpp",
-    "components/rd03d/rd03d_sensor.h",
+    "components/rd03d/rd03d.cpp",
+    "components/rd03d/rd03d.h",
     "components/rd03d/sensor.py"
   ],
   "components": ["sensor"],
