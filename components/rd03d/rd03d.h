@@ -9,7 +9,7 @@ namespace rd03d {
 
 static const char *const TAG = "rd03d";
 
-class RD03DSensor : public Component, public uart::UARTDevice {
+class RD03DSensor : public PollingComponent, public uart::UARTDevice {
  public:
   RD03DSensor(uart::UARTComponent *parent);
 
