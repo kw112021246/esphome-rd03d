@@ -1,4 +1,4 @@
-#include "rd03d_sensor.h"
+#include "rd03d.h"
 #include "esphome/core/log.h"
 
 namespace esphome {
