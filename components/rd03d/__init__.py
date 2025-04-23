@@ -11,7 +11,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required("uart_id"): cv.use_id(uart.UARTComponent),
     cv.Required("name"): cv.string,
 }).extend(sensor.sensor_schema(
-    unit_of_measurement=UNIT_METERS,
+    unit_of_measurement="m",
     icon=ICON_RULER,
     accuracy_decimals=2,
     device_class=DEVICE_CLASS_DISTANCE,
